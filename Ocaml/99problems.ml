@@ -499,6 +499,34 @@ assert ((rotate e19 (-5)) = r19);;
  * Example:
  * * (remove-at '(a b c d) 2)
  * (A C D)
+ *)
+
+let remove_at l i = 
+  let rec aux acc l i = match l with
+    | []   -> acc
+    | h::t -> 
+        if 1 == i 
+        then (acc @ t)
+        else aux (acc @ [h]) t (i - 1)
+  in
+    let idx = 
+      if i < 0 
+      then (List.length l) + i + 1
+      else i
+  in
+    aux [] l idx
+;;
+
+let e20 = [`a; `b; `c; `d];;
+let r20 = [`a; `b; `d];;
+
+assert ((remove_at e20 3) = r20);;
+assert ((remove_at e20 (-2)) = r20);;
+
+
+
+
+ (*
  * P21 [*] Insert an element at a given position into a list.
  * Example:
  * * (insert-at 'alfa '(a b c d) 2)
