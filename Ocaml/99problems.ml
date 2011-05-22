@@ -19,15 +19,18 @@ assert (last [] = None) ;;
  * or using exceptions: which isn't a good idea here 
  *)
 let rec last_ex l = match l with
-  | []    -> raise(Failure "empty list")
+  | []    -> raise (Failure "empty list")
   | [a]   -> a
   | _::b  -> last_ex b
 ;;
 
 assert (last_ex [`a; `b; `c; `d] = `d) ;;
-try 
-  last_ex [] with
-| _ -> assert false
+
+try
+  last_ex []
+with
+| Failure "empty list" -> assert true
+| _                    -> assert false
 ;;
 
 
@@ -228,7 +231,7 @@ in
   aux [] [] l
 ;;
 
-let e09 = e08;;
+let e09 = [`a; `a; `a; `a; `b; `c; `c; `a; `a; `d; `e; `e; `e; `e];;
 let r09= [[`a; `a; `a; `a]; [`b]; [`c; `c]; [`a; `a]; [`d]; [`e; `e; `e; `e]];;
 
 assert (_pack e09 = r09);;
@@ -261,7 +264,7 @@ in
   aux [] (pack l)
 ;;
 
-let e10 = e08;;
+let e10 = [`a; `a; `a; `a; `b; `c; `c; `a; `a; `d; `e; `e; `e; `e];;
 let r10 = [(4, `a); (1, `b); (2, `c); (2, `a); (1, `d); (4, `e)];;
 
 assert (encode e10 = r10);;
@@ -291,7 +294,7 @@ in
   aux [] (encode l)
 ;;
 
-let e11 = e08;;
+let e11 = [`a; `a; `a; `a; `b; `c; `c; `a; `a; `d; `e; `e; `e; `e];;
 let r11 = [Pair (4, `a); Single `b; Pair (2, `c); Pair (2, `a); Single `d; Pair (4, `e)];;
 
 assert (encode_mod e11 = r11);;
@@ -300,8 +303,6 @@ assert (encode_mod e11 = r11);;
  * P12 Decode a run-length encoded list.
  * Given a run-length code list generated as specified in problem P11. Construct its uncompressed version.
  *)
-
-type 'a entry = Single of 'a | Pair of (int * 'a);;
 
 let decode l = 
   let rec mul acc n c = match n with
@@ -316,7 +317,7 @@ in
   aux [] l
 ;;
 
-let e12 = e08;;
+let e12 = [`a; `a; `a; `a; `b; `c; `c; `a; `a; `d; `e; `e; `e; `e];;
 
 assert (decode (encode_mod e12) = e12);;
 
@@ -477,6 +478,15 @@ let rotate l c =
   let [a;b] = (split l count)
 in b @ a
 ;;
+
+(* TODO: how do I fix warning?
+ *
+ *  File "99problems.ml", line 475, characters 6-11:
+ *  Warning 8: this pattern-matching is not exhaustive.
+ *  Here is an example of a value that is not matched:
+ *  []
+ *
+ *)
 
 let e19 = [`a; `b; `c; `d; `e; `f; `g; `h];;
 let r19 = [`d; `e; `f; `g; `h; `a; `b; `c];;
