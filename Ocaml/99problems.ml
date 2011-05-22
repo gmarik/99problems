@@ -69,10 +69,10 @@ assert (last_but_one [] = None);;
 
 let rec kth l i = match l with
 | []   -> None
-| a::b -> if 0 = i then Some a  else kth b (i-1);;
+| a::b -> if 1 = i then Some a  else kth b (i-1);;
 
-assert ((kth [1; 2] 1) = Some 2);;
-assert ((kth [1; 2] 2) = None);;
+assert ((kth [1; 2] 2) = Some 2);;
+assert ((kth [1; 2] 3) = None);;
 
 
 
