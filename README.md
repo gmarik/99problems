@@ -1,9 +1,10 @@
-99p-Ocaml: Ninety-Nine Ocaml Problems
+99 Problems
 =========================================
 
-http://blog.tbueno.com/2011/04/12/programming_problems_to_improve_your_language_skills.html
+[99 problems](http://blog.tbueno.com/2011/04/12/programming_problems_to_improve_your_language_skills.html) is a collection of common programming problems
 
-Based on a Prolog problem list by werner.hett@hti.bfh.ch
+Problems
+========================================
 
 ## Working with lists
 

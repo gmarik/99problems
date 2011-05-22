@@ -1,6 +1,6 @@
 ## 99 problems solved with Ocaml
 
-I'm learning Ocaml by solving "99 Problems"
+Learning Ocaml by solving "99 Problems"
 
 ## Elsewhere
 
