@@ -27,10 +27,9 @@ let rec last_ex l = match l with
 assert (last_ex [`a; `b; `c; `d] = `d) ;;
 
 try
-  last_ex []
+  assert (last_ex [] == [`never_happens])
 with
 | Failure "empty list" -> assert true
-| _                    -> assert false
 ;;
 
 
