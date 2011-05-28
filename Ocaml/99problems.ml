@@ -676,7 +676,30 @@ assert ((lotto_select 6 49) = [28; 23; 27; 24; 26; 25]);;
  * (B A D C E F)
  * 
  * Hint: Use the solution of problem P23.
- * P26 [**] Generate the combinations of K distinct objects chosen from the N elements of a list
+ *)
+
+let rnd_permu list = 
+  let rec aux acc list = 
+    let len = List.length list in
+    match remove_at list (random len) with
+    | None    ,[] -> acc
+    | None    ,rest  -> raise (Failure "oops")
+    | Some el ,rest  -> aux (el::acc) rest
+  in
+
+  aux [] list
+;;
+let e25 = [`a;`b;`c;`d;`e;`f];;
+let r25 = [`a;`f;`b;`e;`c;`d];;
+
+assert ((rnd_permu e25) = r25);;
+
+
+
+
+
+
+(* P26 [**] Generate the combinations of K distinct objects chosen from the N elements of a list
  * In how many ways can a committee of 3 be chosen from a group of 12 people? We all know that there are C(12,3) = 220 possibilities (C(N,K) denotes the well-known binomial coefficients). For pure mathematicians, this result may be great. But we want to really generate all the possibilities in a list.
  * 
  * Example:
