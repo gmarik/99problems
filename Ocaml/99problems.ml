@@ -631,38 +631,27 @@ assert ((range 4 9 = r22));;
  * Hint: Use the built-in random number generator and the result of problem P20.
  *)
 
+(* random generator  *)
+(* let random n = (1 + Random.int n);; *)
+(* pseudo random generator. For testing  *)
+let random n = n / 2 + 1;;
+
 let rnd_select list count = 
-
-  let rec at i list = match list with
-    | [] -> raise Not_found
-    | h::t -> 
-        if i = 1 then h
-        else at (i-1) t
-  in
-    (* random generator  *)
-    let rnd c = (1 + Random.int c) in
-    (* pseudo random generator. For testing  *)
-    let _rnd c =
-      let pseudo_rnd = [2; 3; 7; 2; 1; 1; 5; 4; 8; 9; 2; 3] 
-      in at c pseudo_rnd
+  let rec aux acc list count = 
+    let len = List.length list 
     in
- (* TODO: what's the min syntax for declaring calling function that returns a value ? *)
-  let rec aux acc list cnt = 
-    let len = (List.length list) in
-
-    if cnt = 0 then acc
+    if count = 0 then acc
     else 
-      (* replace it with `rnd len` to use real random gen  *)
-      let random n = (_rnd cnt) in
-      let el = (at (random len) list) 
-      in aux (el::acc) list (cnt - 1)
+      match (remove_at list (random len)) with
+      | None    ,rest    -> raise (Failure "Opps failed to pick an element")
+      | Some el ,rest    -> aux (el::acc) rest (count - 1)
   in
-
   aux [] list count 
 ;;
 let e23 = [`a; `b; `c; `d; `e; `f; `g; `h];;
+let r23 = [`b; `a];;
 
-assert ((rnd_select e23 2) = [`b; `c]);;
+assert ((rnd_select e23 2) = [`d; `e]);;
 
 
  (* P24 [*] Lotto: Draw N different random numbers from the set 1..M.
