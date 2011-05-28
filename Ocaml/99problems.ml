@@ -661,6 +661,15 @@ assert ((rnd_select e23 2) = [`d; `e]);;
  * (23 1 17 33 21 37)
  * 
  * Hint: Combine the solutions of problems P22 and P23.
+ *)
+
+let lotto_select count max =
+  rnd_select (range 1 max) count;;
+
+(* results are predictable since rnd_select uses pseudo randome generator  *)
+assert ((lotto_select 6 49) = [28; 23; 27; 24; 26; 25]);;
+
+ (*
  * P25 [*] Generate a random permutation of the elements of a list.
  * Example:
  * * (rnd-permu '(a b c d e f))
