@@ -559,11 +559,42 @@ assert ((remove_at e20 (-2)) = r20);;
 
 
 
+
+
  (*
  * P21 [*] Insert an element at a given position into a list.
  * Example:
  * * (insert-at 'alfa '(a b c d) 2)
  * (A ALFA B C D)
+ *)
+ (* TODO: REFACTOR *)
+let insert_at el list at = 
+  let idx = 
+    if at < 0 
+    then (List.length list) + at + 1
+    else at - 1
+  in
+  let rec aux acc el list at = match list with
+  |[] -> 
+      if (List.length acc) = idx
+      then (acc @ [el])
+      else acc
+  |h::(_ as t) -> 
+      if (List.length acc) = idx
+      then (acc @ [el] @ h::t) 
+      else aux (acc @ [h]) el t at
+  in
+  aux [] el list at
+;;
+
+let e21 = [`a; `b; `c; `d];;
+let r21 = [`a; `alfa; `b; `c; `d];;
+
+assert ((insert_at `alfa e21 2) = r21);;
+assert ((insert_at `alfa e21 (-4)) = r21);;
+
+
+(*
  * P22 [*] Create a list containing all integers within a given range.
  * If first argument is smaller than second, produce a list in decreasing order.
  * Example:
