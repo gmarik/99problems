@@ -536,10 +536,10 @@ assert ((rotate e19 (-5)) = r19);;
 
 let remove_at l i = 
   let rec aux acc l i = match l with
-    | []   -> acc
+    | []   -> (None, acc)
     | h::t -> 
         if 1 == i 
-        then (acc @ t)
+        then (Some h, (acc @ t))
         else aux (acc @ [h]) t (i - 1)
   in
     let idx = 
@@ -553,8 +553,8 @@ let remove_at l i =
 let e20 = [`a; `b; `c; `d];;
 let r20 = [`a; `b; `d];;
 
-assert ((remove_at e20 3) = r20);;
-assert ((remove_at e20 (-2)) = r20);;
+assert ((remove_at e20 3)    = (Some `c, r20));;
+assert ((remove_at e20 (-2)) = (Some `c, r20));;
 
 
 
