@@ -600,6 +600,27 @@ assert ((insert_at `alfa e21 (-4)) = r21);;
  * Example:
  * * (range 4 9)
  * (4 5 6 7 8 9)
+ *)
+
+let range a b = 
+  let (inc, r) = 
+    if a > b 
+    then (-1, a - b)
+    else (1, b - a)
+  in
+  let rec aux acc count a = match count with
+    | 0 -> acc
+    | _   -> aux (acc @ [a + inc]) (count - 1) (a+inc)
+  in
+  aux [a] r a
+;;
+
+let r22 = [4; 5; 6; 7; 8; 9];;
+
+assert ((range 4 9 = r22));;
+
+
+(*
  * P23 [**] Extract a given number of randomly selected elements from a list.
  * The selected items shall be returned in a list.
  * Example:
