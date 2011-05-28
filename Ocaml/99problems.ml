@@ -553,6 +553,7 @@ let remove_at l i =
 let e20 = [`a; `b; `c; `d];;
 let r20 = [`a; `b; `d];;
 
+assert ((remove_at e20 1000) = (None, e20));;
 assert ((remove_at e20 3)    = (Some `c, r20));;
 assert ((remove_at e20 (-2)) = (Some `c, r20));;
 
