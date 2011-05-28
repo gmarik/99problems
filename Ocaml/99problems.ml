@@ -298,6 +298,10 @@ let r11 = [Pair (4, `a); Single `b; Pair (2, `c); Pair (2, `a); Single `d; Pair 
 
 assert (encode_mod e11 = r11);;
 
+
+
+
+
 (*
  * P12 Decode a run-length encoded list.
  * Given a run-length code list generated as specified in problem P11. Construct its uncompressed version.
@@ -378,6 +382,11 @@ let r14 = [`a; `a; `b; `b; `c; `c; `c; `c; `d; `d];;
 
 assert (dupli e14 = r14);;
 
+
+
+
+
+
  (*
  * P15 [**] Replicate the elements of a list a given number of times.
  * Example:
@@ -402,6 +411,11 @@ let r15 = [`a; `a; `b; `b; `c; `c];;
 
 assert (repli e15 2 = r15);;
 
+
+
+
+
+
 (* P16 [**] Drop every N'th element from a list.
 * Example:
 * * (drop '(a b c d e f g h i k) 3)
@@ -416,6 +430,11 @@ let drop list n =
   aux [] 1 list
 ;;
 assert ((drop [1; 2; 3; 4; 5] 2) = [1; 3; 5]);;
+
+
+
+
+
 
  (* P17 [**] Split a list into two parts; the length of the first part is given.
  * Do not use any predefined predicates.
@@ -434,6 +453,11 @@ let split l n =
 let e17 = [1;2;3;4];;
 let r17 = [[1; 2; 3]; [4]];;
 assert ((split e17 3 ) = r17);;
+
+
+
+
+
 
  (* P18 [**] Extract a slice from a list.
  * Given two indices, I and K, the slice is the list containing the elements
@@ -457,6 +481,11 @@ let e18 = [`a; `b; `c; `d; `e; `f; `g; `h; `i; `k];;
 let r18 = [`c; `d; `e; `f; `g];;
 
 assert ((slice e18 3 7) = r18);;
+
+
+
+
+
 
  (* P19 [**] Rotate a list N places to the left.
  * Examples:
@@ -493,6 +522,11 @@ let r19 = [`d; `e; `f; `g; `h; `a; `b; `c];;
 assert ((rotate e19 0) = e19);;
 assert ((rotate e19 3) = r19);;
 assert ((rotate e19 (-5)) = r19);;
+
+
+
+
+
 
  (* P20 [*] Remove the K'th element from a list.
  * Example:
