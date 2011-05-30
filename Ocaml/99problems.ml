@@ -688,6 +688,7 @@ let rnd_permu list =
   in
 
   aux [] list
+  (* we could use rnd_select here too  *)
 ;;
 let e25 = [`a;`b;`c;`d;`e;`f];;
 let r25 = [`a;`f;`b;`e;`c;`d];;
