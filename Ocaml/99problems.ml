@@ -456,9 +456,6 @@ assert ((split e17 3 ) = r17);;
 
 
 
-
-
-
  (* P18 [**] Extract a slice from a list.
  * Given two indices, I and K, the slice is the list containing the elements
  * between the I'th and K'th element of the original list (both limits
@@ -690,13 +687,11 @@ let rnd_permu list =
   aux [] list
   (* we could use rnd_select here too  *)
 ;;
+
 let e25 = [`a;`b;`c;`d;`e;`f];;
 let r25 = [`a;`f;`b;`e;`c;`d];;
 
 assert ((rnd_permu e25) = r25);;
-
-
-
 
 
 
@@ -708,9 +703,24 @@ assert ((rnd_permu e25) = r25);;
  * ((A B C) (A B D) (A B E) ... )
  *)
 
-let combination count list = 
+
+let combination list count =
+  let rec aux list count q acc =
+    match list with
+    | []    -> acc
+    | h::t  ->
+      let z = q @ [h]
+      in let acc = if count == 1 then acc @ [z] else acc
+      in let acc = (aux t (count - 1) z acc)
+      in (aux t count q acc)
+
+  in (aux list count [] [])
 ;;
-let e26 = [`a; `b; `c; `d; `e; `f];;
+
+let e26 = [`a; `b; `c; `d;];;
+let r26 = [[`a;`b;`c]; [`a;`b;`d]; [`a;`c;`d]; [`b;`c;`d]];;
+
+assert ((combination e26 3) = r26);;
 
 
 (*
