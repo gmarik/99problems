@@ -153,18 +153,18 @@ assert (not (is_palindrome ["l"; "o"; "l"; "o"]));;
 type 'a node = One of 'a | Many of 'a node list;;
 
 (* unoptimized version *)
+
 let rec _flatten l = match l with
 | []        -> []
 | One x::t  -> x :: _flatten t
 | Many x::t -> (_flatten x) @ (_flatten t)
 ;;
 
-(* tail recursive opmtimized *)
 let rec flatten l = 
   let rec aux acc l = match l with
-  | []        -> acc
-  | One x::t  -> [ x ] @ aux acc t
-  | Many x::t -> aux [] x @ aux acc t
+  | []          -> acc
+  | (One x)::t  -> x :: aux acc t
+  | (Many x)::t -> aux ( aux acc x ) t
 in
   aux [] l
 ;;
@@ -481,9 +481,6 @@ assert ((slice e18 3 7) = r18);;
 
 
 
-
-
-
  (* P19 [**] Rotate a list N places to the left.
  * Examples:
  * * (rotate '(a b c d e f g h) 3)
@@ -722,25 +719,24 @@ let r26 = [[`a;`b;`c]; [`a;`b;`d]; [`a;`c;`d]; [`b;`c;`d]];;
 
 assert ((combination e26 3) = r26);;
 
-
 (*
  * P27 [**] Group the elements of a set into disjoint subsets.
  * a) In how many ways can a group of 9 people work in 3 disjoint subgroups of 2, 3 and 4 persons? Write a function that generates all the possibilities and returns them in a list.
- * 
+ *
  * Example:
  * * (group3 '(aldo beat carla david evi flip gary hugo ida))
  * ( ( (ALDO BEAT) (CARLA DAVID EVI) (FLIP GARY HUGO IDA) )
  * ... )
- * 
+ *
  * b) Generalize the above predicate in a way that we can specify a list of group sizes and the predicate will return a list of groups.
- * 
+ *
  * Example:
  * * (group '(aldo beat carla david evi flip gary hugo ida) '(2 2 5))
  * ( ( (ALDO BEAT) (CARLA DAVID) (EVI FLIP GARY HUGO IDA) )
  * ... )
- * 
+ *
  * Note that we do not want permutations of the group members; i.e. ((ALDO BEAT) ...) is the same solution as ((BEAT ALDO) ...). However, we make a difference between ((ALDO BEAT) (CARLA DAVID) ...) and ((CARLA DAVID) (ALDO BEAT) ...).
- * 
+ *
  * You may find more about this combinatorial problem in a good book on discrete mathematics under the term "multinomial coefficients".
  *)
 
