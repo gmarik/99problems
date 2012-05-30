@@ -742,7 +742,99 @@ assert ((combination e26 3) = r26);;
  * Note that we do not want permutations of the group members; i.e. ((ALDO BEAT) ...) is the same solution as ((BEAT ALDO) ...). However, we make a difference between ((ALDO BEAT) (CARLA DAVID) ...) and ((CARLA DAVID) (ALDO BEAT) ...).
  * 
  * You may find more about this combinatorial problem in a good book on discrete mathematics under the term "multinomial coefficients".
- * P28 [**] Sorting a list of lists according to length of sublists
+ *)
+
+let gcomb elist glist = 
+
+    let rec minus list elist =
+
+      let _minus e list=
+        let rec aux e list acc = 
+          match list with
+          | []    -> acc
+          | h::t  -> aux e t (acc @ (if h == e then [] else [h]))
+        in
+        aux e list []
+
+      in
+        match elist with
+        | []    -> list
+        | h::t  -> minus (_minus h list) t
+
+    (* in minus [1;2;3;4; 9] [1;2;3;4;1;2;5;6;7;8];; *)
+
+  in
+
+  let rec aux elist glist acc q rest gq =
+    match glist with
+    | []     -> acc @ [gq]
+    | gh::gt ->
+      match elist with
+      | []    -> acc
+      | h::t  ->
+
+          let s = q @ [h]
+          in
+          let acc = 
+            if 1 == gh then
+              let rest = (minus rest s)
+              in
+              (aux rest gt acc [] rest (gq @ [s]))
+            else
+              acc
+          in
+
+          let acc =
+            (aux t ([gh-1] @ gt)  acc s rest  gq)
+          in
+            (aux t glist          acc q rest  gq)
+   in
+
+   aux elist glist [] [] elist []
+;;
+
+assert (gcomb [1;2;3;4;5] [2;2;1] = [
+ [[1; 2]; [3; 4]; [5]];
+ [[1; 2]; [3; 5]; [4]];
+ [[1; 2]; [4; 5]; [3]];
+ [[1; 3]; [2; 4]; [5]];
+ [[1; 3]; [2; 5]; [4]];
+ [[1; 3]; [4; 5]; [2]];
+ [[1; 4]; [2; 3]; [5]];
+ [[1; 4]; [2; 5]; [3]];
+ [[1; 4]; [3; 5]; [2]];
+ [[1; 5]; [2; 3]; [4]];
+ [[1; 5]; [2; 4]; [3]];
+ [[1; 5]; [3; 4]; [2]];
+ [[2; 3]; [1; 4]; [5]];
+ [[2; 3]; [1; 5]; [4]];
+ [[2; 3]; [4; 5]; [1]];
+ [[2; 4]; [1; 3]; [5]];
+ [[2; 4]; [1; 5]; [3]];
+ [[2; 4]; [3; 5]; [1]];
+ [[2; 5]; [1; 3]; [4]];
+ [[2; 5]; [1; 4]; [3]];
+ [[2; 5]; [3; 4]; [1]];
+ [[3; 4]; [1; 2]; [5]];
+ [[3; 4]; [1; 5]; [2]];
+ [[3; 4]; [2; 5]; [1]];
+ [[3; 5]; [1; 2]; [4]];
+ [[3; 5]; [1; 4]; [2]];
+ [[3; 5]; [2; 4]; [1]];
+ [[4; 5]; [1; 2]; [3]];
+ [[4; 5]; [1; 3]; [2]];
+ [[4; 5]; [2; 3]; [1]]
+])
+;;
+
+
+
+
+
+
+
+
+(* P28 [**] Sorting a list of lists according to length of sublists
  * a) We suppose that a list contains elements that are lists themselves. The objective is to sort the elements of this list according to their length. E.g. short lists first, longer lists later, or vice versa.
  * 
  * Example:
