@@ -1,8 +1,7 @@
 require 'test/unit/assertions'
-include Test::Unit::Asertions
+include Test::Unit::Assertions
 
-
-## USING Basic FP techniques (recursion, and primitive operations)
+## USING recursion, and basic FP operations
 
 # 
 #     P01 (*) Find the last box of a list.
@@ -13,7 +12,7 @@ include Test::Unit::Asertions
 def list_last(list)
   # list.last is too easy
   h, *t = list
-  return h if t.blank?
+  return h if t.empty?
   list_last(t)
 end
 
@@ -29,9 +28,9 @@ assert_nil list_last([])
 
 def list_plast(list)
   h, *t = list
-  return nil if t.blank?
+  return nil if t.empty?
   return h if t.size == 1
-  list_last(t)
+  list_plast(t)
 end
 
 assert     list_plast(%w[a b c d]) == 'c'
@@ -65,7 +64,7 @@ assert     list_at(%w[a b c d], 3) == 'c'
 
 def list_len(list)
   h, *t = list
-  return 0 if list.blank?
+  return 0 if list.empty?
   return 1 + list_len(t)
 end
 
@@ -78,7 +77,7 @@ assert     list_len(%w[a b c d]) == 4
 #     P05 (*) Reverse a list.
 
 def list_rev(list, acc = [])
-  return acc if list.blank?
+  return acc if list.empty?
   h, *t = list
   acc.unshift(h)
   list_rev(t, acc)
@@ -503,7 +502,7 @@ r27 = [
 ]
 
 
-assert r27 = gcombo((1..5).to_a, [2,2,1])
+assert r27 = list_gcombo((1..5).to_a, [2,2,1])
 
 
 
