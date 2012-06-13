@@ -321,29 +321,87 @@ assert r15 = list_repli(e15, 3)
 #     * (drop '(a b c d e f g h i k) 3)
 #     (a b d e g h k)
 #
+
+def list_drop(list, n, c = 1, acc = [])
+  return acc if list.empty?
+
+  h, *t = list
+
+  if c == n
+    c = 1
+  else
+    acc << h
+    c += 1
+  end
+
+  list_drop(t, n, c, acc)
+end
+
+e16 = %w(a b c d e f g h i k)
+r16 = %w(a b d e g h k)
+assert r16 == list_drop(e16, 3)
+
+#
 #     P17 (*) Split a list into two parts; the length of the first part is given.
 #     Do not use any predefined predicates.
 # 
 #     Example:
 #     * (split '(a b c d e f g h i k) 3)
 #     ( (a b c) (d e f g h i k))
+
+def list_split(list, n, acc = [])
+  return acc if list.empty?
+
+  h, *t = list
+
+  if c == n
+    c = 1
+  else
+    acc << h
+    c += 1
+  end
+
+  list_drop(t, n, c, acc)
+end
+
+e17 = %w(a b c d e f g h i k)
+r17 = %w(a b d e g h k)
+assert r17 == list_drop(e17, 3)
+
+
+
 #
 #     P18 (**) Extract a slice from a list.
 #     Given two indices, I and K, the slice is the list containing the elements between the I'th and K'th element of the original list (both limits included). Start counting the elements with 1.
-# 
 #     Example:
 #     * (slice '(a b c d e f g h i k) 3 7)
 #     (c d e f g)
+
+def list_slice(list, n, m, acc = [])
+  return acc if list.empty?
+  h, *t = list
+
+  acc << h if n <= 1 && m >= 1
+
+  list_slice(t, n-1, m-1, acc)
+end
+
+e18 = %w(a b c d e f g h i k)
+r18 = %w(c d e f g)
+
+assert r18 == list_slice(e18, 3, 7)
+
+
+
 #
 #     P19 (**) Rotate a list N places to the left.
+#     Hint: Use the predefined functions length and append, as well as the result of problem P17.
 #     Examples:
 #     * (rotate '(a b c d e f g h) 3)
 #     (d e f g h a b c)
-# 
 #     * (rotate '(a b c d e f g h) -2)
 #     (g h a b c d e f)
 # 
-#     Hint: Use the predefined functions length and append, as well as the result of problem P17.
 #
 #     P20 (*) Remove the K'th element from a list.
 #     Example:
