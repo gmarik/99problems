@@ -350,23 +350,16 @@ assert r16 == list_drop(e16, 3)
 #     ( (a b c) (d e f g h i k))
 
 def list_split(list, n, acc = [])
-  return acc if list.empty?
-
+  # if n < 0 then n = (list.size + n) end
+  return [acc, list] if list.empty? || n == 0
   h, *t = list
-
-  if c == n
-    c = 1
-  else
-    acc << h
-    c += 1
-  end
-
-  list_drop(t, n, c, acc)
+  acc << h
+  list_split(t, n-1, acc)
 end
 
 e17 = %w(a b c d e f g h i k)
-r17 = %w(a b d e g h k)
-assert r17 == list_drop(e17, 3)
+r17 = [%w(a b c), %w(d e f g h i k)]
+assert r17 == list_split(e17, 3)
 
 
 
@@ -401,17 +394,63 @@ assert r18 == list_slice(e18, 3, 7)
 #     (d e f g h a b c)
 #     * (rotate '(a b c d e f g h) -2)
 #     (g h a b c d e f)
+
+def list_rotate(list, k)
+  n = k < 0 ? list.size + k : k
+
+  a,b = list_split(list, n)
+
+  b + a
+end
+#
+e19  = %w(a b c d e f g h)
+r19a = %w(d e f g h a b c)
+r19b = %w(g h a b c d e f)
+assert r19a == list_rotate(e19, 3)
+assert r19b == list_rotate(e19, -2)
+
+
+
 # 
 #
 #     P20 (*) Remove the K'th element from a list.
 #     Example:
 #     * (remove-at '(a b c d) 2)
 #     (a c d)
+
+def list_remove_at(list, n, acc = [])
+  return acc if list.empty?
+  h, *t = list
+  acc << h unless n == 1
+  list_remove_at(t, n - 1, acc)
+end
+
+e20 = %w(a b c d)
+r20 = %w(a c d)
+
+assert r20 == list_remove_at(e20, 2)
+
+
 #
 #     P21 (*) Insert an element at a given position into a list.
 #     Example:
 #     * (insert-at 'alfa '(a b c d) 2)
 #     (a alfa b c d)
+
+def list_insert_at(list, el, n, acc = [])
+  return acc + [el] + list if list.empty? || n==1
+  h, *t = list
+  acc << h
+  list_insert_at(t, el, n - 1, acc)
+end
+
+e21 = %w(a b c d)
+r21 = %w(a alfa b c d)
+
+assert r21 == list_insert_at(e21, 'alfa', 2)
+
+
+
 #
 #     P22 (*) Create a list containing all integers within a given range.
 #     If first argument is smaller than second, produce a list in decreasing order.
