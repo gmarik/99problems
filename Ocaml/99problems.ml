@@ -164,7 +164,7 @@ let rec flatten l =
   let rec aux acc l = match l with
   | []          -> acc
   | (One x)::t  -> x :: aux acc t
-  | (Many x)::t -> aux ( aux acc x ) t
+  | (Many x)::t ->( aux acc x) @ (aux [] t)
 in
   aux [] l
 ;;
