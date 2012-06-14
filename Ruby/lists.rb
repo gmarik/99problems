@@ -457,6 +457,16 @@ assert r21 == list_insert_at(e21, 'alfa', 2)
 #     Example:
 #     * (range 4 9)
 #     (4 5 6 7 8 9)
+
+def list_range(n, m, acc = [])
+  acc << n
+  return acc if n == m
+
+  list_range(n+1, m, acc)
+end
+r21 = [4, 5, 6, 7, 8, 9]
+assert r21 == list_range(4, 9)
+
 #
 #     P23 (**) Extract a given number of randomly selected elements from a list.
 #     The selected items shall be returned in a list.
