@@ -445,13 +445,13 @@ assert ((drop [1; 2; 3; 4; 5] 2) = [1; 3; 5]);;
  *)
 let split l n = 
   let rec aux acc n l = match l with
-  | h::t    -> if n > 0 then aux (acc @ [h]) (n-1) t else [acc; l]
-  | []      -> [acc]
+  | h::t    -> if n > 0 then aux (acc @ [h]) (n-1) t else (acc, l)
+  | []      -> (acc, [])
   in
   aux [] n l
 ;;
 let e17 = [1;2;3;4];;
-let r17 = [[1; 2; 3]; [4]];;
+let r17 = ([1; 2; 3], [4]);;
 assert ((split e17 3 ) = r17);;
 
 
@@ -497,18 +497,9 @@ let rotate l c =
     then c 
     else (List.length l) + c
   in
-  let [a;b] = (split l count)
+  let (a,b) = (split l count)
 in b @ a
 ;;
-
-(* TODO: how do I fix warning?
- *
- *  File "99problems.ml", line 475, characters 6-11:
- *  Warning 8: this pattern-matching is not exhaustive.
- *  Here is an example of a value that is not matched:
- *  []
- *
- *)
 
 let e19 = [`a; `b; `c; `d; `e; `f; `g; `h];;
 let r19 = [`d; `e; `f; `g; `h; `a; `b; `c];;
