@@ -53,8 +53,7 @@ def list_at(list, i)
   list_at(t, i - 1)
 end
 
-assert     list_at(%w[a b c d], 3) == 'c'
-
+assert  'c' == list_at(%w[a b c d], 3)
 
 
 
@@ -68,7 +67,7 @@ def list_len(list)
   return 1 + list_len(t)
 end
 
-assert     list_len(%w[a b c d]) == 4
+assert  4 == list_len(%w[a b c d])
 
 
 
