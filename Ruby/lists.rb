@@ -463,30 +463,74 @@ def list_range(n, m, acc = [])
 
   list_range(n+1, m, acc)
 end
-r21 = [4, 5, 6, 7, 8, 9]
-assert r21 == list_range(4, 9)
+r22 = [4, 5, 6, 7, 8, 9]
+assert r22 == list_range(4, 9)
 
 #
 #     P23 (**) Extract a given number of randomly selected elements from a list.
 #     The selected items shall be returned in a list.
+#     Hint: Use the built-in random number generator and the result of problem P20.
 #     Example:
 #     * (rnd-select '(a b c d e f g h) 3)
 #     (e d a)
+#
+
+def pseudo_rnd(n)
+  n / 2 + 1
+end
+
+def list_rnd_select(list, count, rand = method(:rand), acc = [])
+  return acc if list.empty? || count == 0
+  idx = rand.call(list.size - 1) + 1
+  el, rest = list_remove_at(list, idx)
+  raise ArgumentError unless el
+  acc << el
+  list_rnd_select(rest, count - 1, rand, acc)
+end
+
+e23 = %w(a b c d e f g h)
+r23 = %w(e f d)
+
+assert r23 == list_rnd_select(e23, 3, method(:pseudo_rnd))
+
+
 # 
-#     Hint: Use the built-in random number generator and the result of problem P20.
 #     P24 (*) Lotto: Draw N different random numbers from the set 1..M.
 #     The selected numbers shall be returned in a list.
 #     Example:
+#     Hint: Combine the solutions of problems P22 and P23.
 #     * (lotto-select 6 49)
 #     (23 1 17 33 21 37)
+
+def list_select(n, m, rand = method(:rand), acc = [])
+  list_rnd_select(list_range(1, m), n, rand, acc)
+end
+
+r24 = [26, 25, 27, 24, 28, 23] # pseudo_rnd selection
+assert r24 == list_select(6, 49, method(:pseudo_rnd))
+
+
 # 
-#     Hint: Combine the solutions of problems P22 and P23.
 #     P25 (*) Generate a random permutation of the elements of a list.
 #     Example:
+#     Hint: Use the solution of problem P23.
 #     * (rnd-permu '(a b c d e f))
 #     (b a d c e f)
+#
+def list_rand_permu(list, rnd = method(:rand), acc = [])
+  return acc if list.empty?
+  idx = rnd.call(list.size)
+  el, rest = list_remove_at(list, idx)
+  acc << el
+  list_rand_permu(rest, rnd, acc)
+end
+
+e25 = %w(a b c d e f)
+r25 = %w[d c e b f a]
+assert r25 == list_rand_permu(e25, method(:pseudo_rnd))
+
+
 # 
-#     Hint: Use the solution of problem P23.
 #     P26 (**) Generate the combinations of K distinct objects chosen from the N elements of a list
 #     In how many ways can a committee of 3 be chosen from a group of 12 people? We all know that there are C(12,3) = 220 possibilities (C(N,K) denotes the well-known binomial coefficients). For pure mathematicians, this result may be great. But we want to really generate all the possibilities in a list.
 # 
@@ -612,19 +656,53 @@ assert r27 = list_gcombo((1..5).to_a, [2,2,1])
 
 
 
-
-
 #     P28 (**) Sorting a list of lists according to length of sublists
 #     a) We suppose that a list contains elements that are lists themselves. The objective is to sort the elements of this list according to their length. E.g. short lists first, longer lists later, or vice versa.
 # 
 #     Example:
 #     * (lsort '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
-#     ((O) (D E) (D E) (M N) (A B C) (F G H) (I J K L))
+#     ((o) (d e) (d e) (m n) (a b c) (f g h) (i j k l))
+#
+def list_sort(list, acc = [])
+  return acc if list.empty?
+  h, *t = list
+end
+
+e28 = [%w(a b c), %w(d e), %w(f g h), %w(d e), %w(i j k l), %w(m n), %w(o)]
+r28 = [%w(o), %w(d e), %w(d e), %w(m n), %w(a b c), %w(f g h), %w(i j k l)]
+
+#idiomatic ruby
+len_sorter = lambda do |a,b|
+  if a.length == b.length
+    # order lexicographically
+    a.join <=> b.join 
+  else
+    a.length <=> b.length
+  end
+end
+assert r28 == e28.sort(&len_sorter)
+
 # 
 #     b) Again, we suppose that a list contains elements that are lists themselves. But this time the objective is to sort the elements of this list according to their length frequency; i.e., in the default, where sorting is done ascendingly, lists with rare lengths are placed first, others with a more frequent length come later.
 # 
 #     Example:
 #     * (lfsort '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
 #     ((i j k l) (o) (a b c) (f g h) (d e) (d e) (m n))
-# 
+
+r28b = [%w(i j k l), %w(o), %w(a b c), %w(f g h), %w(d e), %w(d e), %w(m n)]
+
+#idiomatic ruby
+freq = e28.inject({}) {|acc, el| acc.merge(el.length => (acc[el.length] || 1) + 1 ) }
+
+len_freq_sorter = lambda do |a,b|
+  _a = freq[a.length]
+  _b = freq[b.length]
+  if _a == _b
+    a.join <=> b.join
+  else
+    _a <=> _b
+  end
+end
+assert r28b == e28.sort(&len_freq_sorter)
+#
 #     Note that in the above example, the first two lists in the result have length 4 and 1, both lengths appear just once. The third and forth list have length 3 which appears twice (there are two list of this length). And finally, the last three lists have length 2. This is the most frequent length.
