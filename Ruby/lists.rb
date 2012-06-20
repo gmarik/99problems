@@ -418,16 +418,16 @@ assert r19b == list_rotate(e19, -2)
 #     (a c d)
 
 def list_remove_at(list, n, acc = [])
-  return acc if list.empty?
   h, *t = list
-  acc << h unless n == 1
-  list_remove_at(t, n - 1, acc)
+  return [h, acc + t] if t.empty? || n == 1
+  list_remove_at(t, n - 1, acc << h)
 end
 
 e20 = %w(a b c d)
 r20 = %w(a c d)
 
-assert r20 == list_remove_at(e20, 2)
+assert ['b', r20] == list_remove_at(e20, 2)
+assert [1, []] == list_remove_at([1], 0)
 
 
 #
