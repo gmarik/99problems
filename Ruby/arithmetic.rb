@@ -14,12 +14,7 @@ def prime?(n, m = n / 2)
   end
 end
 
-assert prime?(1)
-assert prime?(2)
-assert prime?(3)
-assert prime?(5)
-assert prime?(7)
-assert prime?(11)
+assert [1, 2, 3, 5, 7, 11].all?(&method(:prime?))
 assert (not prime?(4))
 assert (not prime?(10))
 
@@ -81,8 +76,6 @@ assert 10 == totient_phi(11)
 #
 
 def prime_factors(k, m = k/2, acc = [])
-
-
 end
 
 assert [3, 3, 5, 7] == prime_factors(315)
