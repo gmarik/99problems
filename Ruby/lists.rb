@@ -13,10 +13,10 @@ include Test::Unit::Assertions
 #     (d)
 #
 def list_last(list)
-  # list.last is too easy
   h, *t = list
-  return h if t.empty?
-  list_last(t)
+  if t.empty? then h
+  else list_last(t)
+  end
 end
 
 assert     list_last(%w[a b c d]) == 'd'
@@ -30,10 +30,10 @@ assert_nil list_last([])
 #     (c)
 
 def list_plast(list)
-  h, *t = list
-  return nil if t.empty?
-  return h if t.size == 1
-  list_plast(t)
+  h, h1, *t = list
+  if t.empty? then h1 && h
+  else list_plast([h1] + t)
+  end
 end
 
 assert     list_plast(%w[a b c d]) == 'c'
@@ -50,10 +50,10 @@ assert_nil list_plast([])
 #     c
 
 def list_at(list, i)
-  #simplest but not optimal solution
   h, *t = list
-  return h if i == 1
-  list_at(t, i - 1)
+  if i == 1 then h
+  else list_at(t, i - 1)
+  end
 end
 
 assert  'c' == list_at(%w[a b c d], 3)
@@ -64,10 +64,11 @@ assert  'c' == list_at(%w[a b c d], 3)
 # 
 #     P04 (*) Find the number of elements of a list.
 
-def list_len(list)
+def list_len(list, acc = 0)
   h, *t = list
-  return 0 if list.empty?
-  return 1 + list_len(t)
+  if list.empty? then acc
+  else list_len(t, acc + 1)
+  end
 end
 
 assert  4 == list_len(%w[a b c d])
@@ -79,10 +80,10 @@ assert  4 == list_len(%w[a b c d])
 #     P05 (*) Reverse a list.
 
 def list_rev(list, acc = [])
-  return acc if list.empty?
   h, *t = list
-  acc.unshift(h)
-  list_rev(t, acc)
+  if list.empty? then acc
+  else list_rev(t, [h] + acc)
+  end
 end
 
 assert     list_rev(%w[a b c d]) == %w[d c b a]
