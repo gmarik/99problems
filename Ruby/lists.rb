@@ -1,7 +1,10 @@
 require 'test/unit/assertions'
 include Test::Unit::Assertions
 
+# Ruby 1.9.3+
+
 ## USING recursion, and basic FP operations
+
 
 # 
 #     P01 (*) Find the last box of a list.
@@ -663,24 +666,55 @@ assert r27 = list_gcombo((1..5).to_a, [2,2,1])
 #     * (lsort '((a b c) (d e) (f g h) (d e) (i j k l) (m n) (o)))
 #     ((o) (d e) (d e) (m n) (a b c) (f g h) (i j k l))
 #
-def list_sort(list, acc = [])
-  return acc if list.empty?
-  h, *t = list
+def list_sort(list, &block)
+  list_mergesort(list, &block)
 end
+
+def list_mergesort(list, &block)
+  n = list.size / 2
+  if n == 0 then list
+  else
+    lft, rgt = list[0...n], list[n..-1]
+    mergesort_merge(list_mergesort(lft, &block), list_mergesort(rgt, &block), &block)
+  end
+end
+
+def mergesort_merge(lft, rgt, acc = [], &block)
+  if lft.empty? || rgt.empty? then acc + lft + rgt
+  else
+    h1, *t1 = lft
+    h2, *t2 = rgt
+
+    default_comparator = ->(a, b) { a <=> b }
+
+    if (block || default_comparator).(h1, h2) < 0 then mergesort_merge(t1, rgt, acc + [h1], &block)
+    else mergesort_merge(lft, t2, acc + [h2], &block)
+    end
+  end
+end
+
+e28_ = [234, 1, 5, 0 , -2]
+r28_ = [-2, 0, 1, 5, 234]
+
+assert r28_ == list_sort(e28_)
+assert %w[a b c d] == list_sort(%w[d a b c])
 
 e28 = [%w(a b c), %w(d e), %w(f g h), %w(d e), %w(i j k l), %w(m n), %w(o)]
 r28 = [%w(o), %w(d e), %w(d e), %w(m n), %w(a b c), %w(f g h), %w(i j k l)]
 
 #idiomatic ruby
-len_sorter = lambda do |a,b|
-  if a.length == b.length
-    # order lexicographically
-    a.join <=> b.join 
-  else
-    a.length <=> b.length
+len_comparator = lambda do |a, b|
+  # order lexicographically 
+  if a.length == b.length then a.join <=> b.join
+  else a.length <=> b.length
   end
 end
-assert r28 == e28.sort(&len_sorter)
+
+# verify with ruby stdlib first
+assert r28 == e28.sort(&len_comparator)
+
+# now with our implementation
+assert list_sort(e28, &len_comparator)
 
 # 
 #     b) Again, we suppose that a list contains elements that are lists themselves. But this time the objective is to sort the elements of this list according to their length frequency; i.e., in the default, where sorting is done ascendingly, lists with rare lengths are placed first, others with a more frequent length come later.
@@ -691,18 +725,30 @@ assert r28 == e28.sort(&len_sorter)
 
 r28b = [%w(i j k l), %w(o), %w(a b c), %w(f g h), %w(d e), %w(d e), %w(m n)]
 
-#idiomatic ruby
-freq = e28.inject({}) {|acc, el| acc.merge(el.length => (acc[el.length] || 1) + 1 ) }
+#build frequency
+freq = e28.inject(Hash.new(1), &->(acc, el) { acc.merge(el.length => acc[el.length] + 1 ) })
 
-len_freq_sorter = lambda do |a,b|
-  _a = freq[a.length]
-  _b = freq[b.length]
-  if _a == _b
-    a.join <=> b.join
-  else
-    _a <=> _b
+len_freq_comparator = ->(a, b) do
+  _a, _b = freq.values_at(a.length, b.length)
+  if _a == _b then a.join <=> b.join
+  else _a <=> _b
   end
 end
-assert r28b == e28.sort(&len_freq_sorter)
+
+# verify using native ruby sort
+assert r28b == e28.sort(&len_freq_comparator)
+
+# now with our implementation
+assert r28b == list_sort(e28, &len_freq_comparator)
+
 #
 #     Note that in the above example, the first two lists in the result have length 4 and 1, both lengths appear just once. The third and forth list have length 3 which appears twice (there are two list of this length). And finally, the last three lists have length 2. This is the most frequent length.
+
+# helper functions
+
+def list_map(list, acc = [], &block)
+  h, *t = list
+  if list.empty? then acc
+  else list_map(t, acc.push(block.(h)), &block)
+  end
+end
