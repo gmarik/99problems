@@ -38,11 +38,11 @@ assert 1 == gcd(7, 5)
 #    Example:
 #    * (coprime 35 64)
 #    T
-def coprime(a, b)
+def coprime?(a, b)
   1 == gcd(a, b)
 end
 
-assert coprime(35, 64)
+assert coprime?(35, 64)
 
 #
 #    P34 (**) Calculate Euler's totient function phi(m).
@@ -55,7 +55,7 @@ assert coprime(35, 64)
 
 def totient_phi(n, m = n, acc = 1)
   if m == 1 then acc
-  else totient_phi(n, m - 1, ( coprime(n, m) ? 1:0 ) + acc)
+  else totient_phi(n, m - 1, ( coprime?(n, m) ? 1:0 ) + acc)
   end
 end
 
@@ -74,12 +74,25 @@ assert 10 == totient_phi(11)
 #    * (prime-factors 315)
 #    (3 3 5 7)
 #
-
-def prime_factors(k, m = k/2, acc = [])
+#
+def primes(n, k = 1, acc = [])
+  if n <= k then acc
+  else primes(n - 1, k, if prime?(n) then acc.push(n) else acc end)
+  end
 end
 
-assert [3, 3, 5, 7] == prime_factors(315)
+def prime_factors(k, primes = primes(k), acc = [])
+  if k == 1 or primes.empty? then acc
+  else
+    h, *t = primes
+    if coprime?(k, h) then  prime_factors(k, t, acc)
+    else                    prime_factors(k / h, primes, acc.unshift(h))
+    end
+  end
+end
 
+assert [11] == prime_factors(11)
+assert [3, 3, 5, 7] == prime_factors(315)
 
 #
 #
@@ -89,6 +102,28 @@ assert [3, 3, 5, 7] == prime_factors(315)
 #    Example:
 #    * (prime-factors-mult 315)
 #    ((3 2) (5 1) (7 1))
+
+def _encode(list, c = 1, acc = [])
+
+  h, hh, *t = list
+  if list.empty? then acc
+  elsif hh.nil? then acc.push([h, c])
+  elsif h == hh then _encode([hh] + t, c + 1, acc)
+  else _encode([hh] + t, 1, acc.push([h, c]))
+  end
+end
+
+assert []                       == _encode([])
+assert [[3, 1]]                 == _encode([3])
+assert [[3, 1], [5, 1]]         == _encode([3, 5])
+assert [[3, 2], [5, 1], [7, 1]] == _encode([3, 3, 5, 7])
+
+def prime_factors_mult(k)
+  _encode(prime_factors(k))
+end
+
+assert [[3, 2], [5, 1], [7, 1]] == prime_factors_mult(315)
+
 #
 #
 #    P37 (**) Calculate Euler's totient function phi(m) (improved).
@@ -97,13 +132,34 @@ assert [3, 3, 5, 7] == prime_factors(315)
 #
 #    Note that a ** b stands for the b'th power of a.
 #
+
+def totient_phi_improved(n, factors = prime_factors_mult(n), sum = 0)
+  (p1, m1), *t = factors
+
+  if factors.empty? then sum
+  else totient_phi_improved(n, t, sum + (p1 - 1) * p1 ** (m1 - 1))
+  end
+end
+
+assert 10 == totient_phi_improved(11)
+
+#
+#
 #
 #    P38 (*) Compare the two methods of calculating Euler's totient function.
 #    Use the solutions of problems P34 and P37 to compare the algorithms. Take the number of logical inferences as a measure for efficiency. Try to calculate phi(10090) as an example.
+
+# TODO
+
 #
 #
 #    P39 (*) A list of prime numbers.
 #    Given a range of integers by its lower and upper limit, construct a list of all prime numbers in that range.
+
+# primes(from, downto)
+
+assert [11, 13, 17, 19] == primes(20, 10).reverse
+
 #
 #
 #    P40 (**) Goldbach's conjecture.
@@ -111,6 +167,40 @@ assert [3, 3, 5, 7] == prime_factors(315)
 #    Example:
 #    * (goldbach 28)
 #    (5 23)
+#
+
+def goldbach(n, primes = primes(n))
+
+  if primes.empty? then [0, n]
+  else
+    b, *rest = primes
+
+    a = _other(n, b, rest)
+
+    if a == nil
+      goldbach(n, rest)
+    else
+      [a, b]
+    end
+  end
+end
+
+def _other(n, base, rest)
+
+  if rest.empty? then nil
+  else
+    h, *t = rest
+
+    if h + base == n then h
+    else _other(n, base, t)
+    end
+  end
+end
+
+assert [5, 23] == goldbach(28)
+assert [3, 7] == goldbach(10)
+assert [5, 7] == goldbach(12)
+
 #
 #
 #    P41 (**) A list of Goldbach compositions.
@@ -124,6 +214,20 @@ assert [3, 3, 5, 7] == prime_factors(315)
 #    18 = 5 + 13
 #    20 = 3 + 17
 #
+
+def goldbach_list(from, to, diff = 0, acc = [])
+
+  if from > to then acc
+  else
+    satisfies = (from.even? and g = goldbach(from) and (g[0] - g[1]).abs > diff)
+
+    goldbach_list(from + 1, to, diff, if satisfies then acc.push([from, g]) else acc end )
+  end
+end
+
+assert [[10, [3, 7]], [12, [5, 7]], [14, [3, 11]]] == goldbach_list(9, 15)
+
+#
 #    In most cases, if an even number is written as the sum of two prime numbers, one of them is very small. Very rarely, the primes are both bigger than say 50. Try to find out how many such cases there are in the range 2..3000.
 #
 #    Example (for a print limit of 50):
@@ -132,3 +236,7 @@ assert [3, 3, 5, 7] == prime_factors(315)
 #    1382 = 61 + 1321
 #    1856 = 67 + 1789
 #    1928 = 61 + 1867
+
+
+# takes few momens
+#assert 1470 == goldbach_list(1, 3000, 50).size
