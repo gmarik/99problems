@@ -3,6 +3,11 @@
 
 [99 problems](http://blog.tbueno.com/2011/04/12/programming_problems_to_improve_your_language_skills.html) is a collection of common programming problems
 
+## Other challenges
+
+- [Project Euler](http://projecteuler.net) is a series of challenging mathematical/computer programming problems that will require more than just mathematical insights to solve
+- [Rosalind](http://rosalind.info/problems/as-table/) is a platform for learning bioinformatics through problem solving.
+
 Problems
 ========================================
 
