@@ -55,7 +55,7 @@ module PerfectSquare
 
   # constructs a string representation of a matrix
   def fmt(arr)
-    return [] if arr.empty?
+    return "" if arr.empty?
     n = arr.size * arr.first.size
     s = n.to_s.size
     f = "%#{s + 1}d"
@@ -124,6 +124,7 @@ if $0 == __FILE__ && ENV['TEST']
 
   assert fmt(perfect_square(1)) == " 1"
   assert fmt(perfect_square(4)) == " 4 3\n 1 2"
+  assert fmt([]) == ""
 
   assert sqrti(16.5) == 4
   assert perfect_square?(4)
