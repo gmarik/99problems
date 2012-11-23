@@ -103,31 +103,31 @@ if $0 == __FILE__ && ENV['TEST']
   require 'test/unit'
   include Test::Unit::Assertions
 
-  assert perfect_square(16) == [
+  assert_equal perfect_square(16), [
     [16, 15, 14, 13],
     [5,   4,  3, 12],
     [6,   1,  2, 11],
     [7,   8,  9, 10]
   ]
 
-  assert perfect_square(9) == [
+  assert_equal perfect_square(9), [
     [5, 4, 3],
     [6, 1, 2],
     [7, 8, 9]]
 
-  assert perfect_square(1) == [ [1] ]
+  assert_equal perfect_square(1), [ [1] ]
 
-  assert calculate(9) == [[9, 2, 2], [8, 2, 1], [7, 2, 0], [6, 1, 0], [5, 0, 0], [4, 0, 1], [3, 0, 2], [2, 1, 2], [1, 1, 1]]
-  assert linearize(calculate(9)) == [5, 4, 3, 6, 1, 2, 7, 8, 9]
+  assert_equal calculate(9), [[9, 2, 2], [8, 2, 1], [7, 2, 0], [6, 1, 0], [5, 0, 0], [4, 0, 1], [3, 0, 2], [2, 1, 2], [1, 1, 1]]
+  assert_equal linearize(calculate(9)), [5, 4, 3, 6, 1, 2, 7, 8, 9]
 
-  assert [26, 21, 17, 13, 10, 7, 5, 3, 2, 1].map(&method(:next_turn)) == [21, 17, 13, 10, 7, 5, 3, 2, 1, 0]
+  assert_equal [26, 21, 17, 13, 10, 7, 5, 3, 2, 1].map(&method(:next_turn)), [21, 17, 13, 10, 7, 5, 3, 2, 1, 0]
 
-  assert fmt(perfect_square(1)) == " 1"
-  assert fmt(perfect_square(4)) == " 4 3\n 1 2"
-  assert fmt([]) == ""
+  assert_equal fmt(perfect_square(1)), " 1"
+  assert_equal fmt(perfect_square(4)), " 4 3\n 1 2"
+  assert_equal fmt([]), ""
 
-  assert sqrti(16.5) == 4
-  assert perfect_square?(4)
-  assert !perfect_square?(6)
-  assert !perfect_square?(5)
+  assert_equal sqrti(16.5), 4
+  assert_equal perfect_square?(4), true
+  assert_equal perfect_square?(6), false
+  assert_equal perfect_square?(5), false
 end
