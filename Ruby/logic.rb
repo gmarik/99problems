@@ -34,14 +34,8 @@ AND = ->(a, b) {
   end
 }
 
-OR  = ->(a, b) {
-  case [a, b]
-  when [false, false]  then false
-  else                      true
-  end
-}
-
-XOR = ->(a, b) { OR[AND[a, NOT[b]], AND[NOT[a], b]] }
+OR   = ->(a, b) { NOT[AND[NOT[a], NOT[b]]] }
+XOR  = ->(a, b) { OR[AND[a, NOT[b]], AND[NOT[a], b]] }
 NAND = ->(a, b) { NOT[AND[a, b]] }
 NOR  = ->(a, b) { NOT[OR[a, b]] }
 EQU  = ->(a, b) { OR[AND[a, b], NOT[OR[a,b]]] }
